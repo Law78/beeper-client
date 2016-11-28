@@ -16,6 +16,12 @@
 <script>
   export default {
     name: 'login',
+    created(){
+      if(this.$router.params){
+        this.user.username = this.$router.params.username;
+      }
+        
+    },
     data() {
       return {
         loading: false,

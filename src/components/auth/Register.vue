@@ -31,6 +31,8 @@
         this.$http.post("/users", this.user)
           .then(function (res){
             alertify.success('Success! You can now login with your email and password!');
+            this.$router.params = {};
+            this.$router.params.username = this.user.username;
             this.$router.push('/auth/login');
           })
           .catch(function(res){

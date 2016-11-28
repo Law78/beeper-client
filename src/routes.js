@@ -6,6 +6,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dash from './components/dash/Dash';
 import Newsfeed from './components/dash/Newsfeed';
+import Profile from './components/dash/Profile';
 
 // Notifico Vue che uso VueRouter registrando il plugin
 Vue.use(VueRouter);
@@ -15,7 +16,7 @@ const router = new VueRouter({
     {
       path: '/auth',
       component: Auth,
-      redirect: '/auth/login',
+      redirect: '/auth/login/:username',
       children: [
         {
           path: 'login',
@@ -38,6 +39,10 @@ const router = new VueRouter({
           path: 'newsfeed',
           component: Newsfeed,
           meta: { requiresAuth: true }
+        },
+        {
+          path: 'profile/:username',
+          component: Profile
         }
       ]
     }

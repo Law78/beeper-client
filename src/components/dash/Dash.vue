@@ -6,7 +6,7 @@
         <div class="col-md-4 col-sm-12 sideView">
           <sidebar></sidebar>
         </div>
-        <div class="col-md-7 col-sm-12 mainView">
+        <div class="col-md-7 col-sm-12 col-md-offset-1 mainView">
           <transition name="fade">
             <router-view></router-view>
           </transition>
@@ -38,7 +38,7 @@
  .sideView {
     background: #fff;
     border-radius: 6px;
-    margin: 0px 20px 20px 0px;
+    
   }
 
   .mainView {
