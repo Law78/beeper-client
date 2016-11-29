@@ -65,6 +65,27 @@ Attenzione devi usare i single quotes e dentro i double quotes:
  API: '"http://localhost:9090"'
  ```
 
+## Routes
+
+Installo il Vue Router ufficiale:
+
+```
+npm install vue-router --save
+```
+
+Per usarlo devo iniettarlo in Vue con l'use, per cui creo un file routes.js:
+
+```
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+...
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+```
+
+Vedi anche la documentazione: http://router.vuejs.org/en/api/route-object.html
+
 ## Richieste http
 
 https://github.com/pagekit/vue-resource/blob/master/docs/http.md
@@ -106,3 +127,7 @@ Vue.http.interceptors.push(function(request, next){
   });
 });
 ```
+
+#Watch
+
+Quando carico il profilo, il componente Profile prende i dati per via del metodo created, che carica il this.getUser(), ma quando cambio l'url con il router-link di Vue, il componente non richiama la getUser() e per questo non aggiorna il dato. Devo usare il metodo watch e fare il watch di $route. Questo però mi aggiorna la parte superiore dell'avatar e della descrizione ma non il beeplist, questo perchè anche il componente beeplist non ricarica i dati. Devo mettere un nuovo watch. A cosa? Vediamo, tramite gli strumenti di sviluppo di Chrome (Dev Tools) e plugin Vue, che il dato che cambia, nell'oggetto del componente BeepList è l'endpoint. Quindi metto un watch anche sull'endpoint, nel componente Beeplist. Dove resetto i beeps e richiamo la getBeeps.
