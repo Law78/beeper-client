@@ -7,6 +7,7 @@ import Register from './components/auth/Register';
 import Dash from './components/dash/Dash';
 import Newsfeed from './components/dash/Newsfeed';
 import Profile from './components/dash/Profile';
+import Settings from './components/dash/Settings';
 
 // Notifico Vue che uso VueRouter registrando il plugin
 Vue.use(VueRouter);
@@ -43,6 +44,11 @@ const router = new VueRouter({
         {
           path: 'profile/:username',
           component: Profile
+        },
+        {
+          path: '/settings',
+          component: Settings,
+          meta: { requiresAuth: true }
         }
       ]
     }

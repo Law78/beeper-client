@@ -78,7 +78,7 @@ Per usarlo devo iniettarlo in Vue con l'use, per cui creo un file routes.js:
 ```
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-...
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -118,7 +118,7 @@ Posso modificare le request e le response con l'interceptor.
 
 Nel main.js vado a scrivere lo skeleton dell'interceptor:
 
-```
+```js
 // Interceptors
 Vue.http.interceptors.push(function(request, next){
   // Modifica la Richiesta (request) qui
@@ -131,3 +131,53 @@ Vue.http.interceptors.push(function(request, next){
 #Watch
 
 Quando carico il profilo, il componente Profile prende i dati per via del metodo created, che carica il this.getUser(), ma quando cambio l'url con il router-link di Vue, il componente non richiama la getUser() e per questo non aggiorna il dato. Devo usare il metodo watch e fare il watch di $route. Questo però mi aggiorna la parte superiore dell'avatar e della descrizione ma non il beeplist, questo perchè anche il componente beeplist non ricarica i dati. Devo mettere un nuovo watch. A cosa? Vediamo, tramite gli strumenti di sviluppo di Chrome (Dev Tools) e plugin Vue, che il dato che cambia, nell'oggetto del componente BeepList è l'endpoint. Quindi metto un watch anche sull'endpoint, nel componente Beeplist. Dove resetto i beeps e richiamo la getBeeps.
+
+#Vuex
+
+In Sidebar ho già il mio dato dell'utente, quindi richiederlo anche per il componente Settings non è una best practies. Devo ottimizzare! Vuex è un "magazzino" centralizzato delle informazioni, questo magazzino è detto STORE e ogni Componente può impostare e prelevare dati dallo STORE.
+
+```shell
+npm install --save vuex
+```
+
+nella root del progetto creo un file store.js All'interno vado a creare una nuova instanza di Vuex.Store che accetta un oggetto con lo state (un oggetto contenente i dati) e le mutations (un oggetto che contiene le funzioni che insistono sui dati).
+La filosofia è quella di NON modificare lo stato direttamente, ma usare le mutazioni definite dalle funzioni, si fa un DISPATCH delle MUTAZIONI. In questo modo ho completo controllo dei cambiamenti del mio stato. Questo è ottimo ancor più la mia applicazione crescerà nel tempo!
+
+```js
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  store: {
+
+  },
+  mutations: {
+
+  }
+})
+```
+
+Ok come lo uso?
+
+Devo importare lo store.js nel main.js dove definisco il mio componente VUE principale e devo inserirlo nei settaggi di definizione di Vue:
+
+```js
+new Vue({
+  el: '#app',
+  router: Router,
+  store: store,
+  template: '<App/>',
+  components: { App },
+});
+```
+
+Il retrieve del dato dell'utente lo facciamo a livello di Sidebar. Ma ora non ha più senso farlo qui, conviene farlo ad un livello più alto in cui riesco ad impostare il mio user nello store e renderlo accessibile anche a Settings. Un componente candidato è Dash. All'interno della parte di successo della chiamata alla mia API, faro il DISPATCH della mia MUTATIONS, tramite l'oggetto $store accessibile al this del componente e richiamando il metodo commit, in cui passo il nome della mutazione e l'eventuale dato (opzionale) detto PAYLOAD:
+
+```js
+this.$store.commit('metodo', dato);
+```
+ovviamente posso invocare la mutazione anche nella sezione della catch, per eventuali problemi della API e quindi richiamare un "clear" del dato nello store.
+
+C'è però un problema. Il componente Sidebar "perde" l'oggetto che inizializzo dallo store dopo la chiamata, questo perchè la proprietà che inizializzo prendendo il dato dallo store non è reactive, cioè non reagisce al cambiamento. Lo store lo aggiorno dopo una chiamata API esterna, Dash e Sidebar sono costruiti quasi nello stesso istante e quindi Sidebar si inizializza con un oggetto ancora vuoto e perde il dato nuovo. Questo lo risolvo con le computed properties.

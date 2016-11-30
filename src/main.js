@@ -31,11 +31,11 @@ Vue.http.interceptors.push(function(req, next){
         alertify.error(e);
       });
     } 
-    if(res.status === 401){
+    /*if(res.status === 401){
       Vue.auth.destroyToken();
       alertify.error('Non Autorizzato!');
       this.$router.push('/auth/login');
-    }
+    }*/
     if(this.loading){
       this.loading = !this.loading;
     }

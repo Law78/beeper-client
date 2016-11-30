@@ -44,6 +44,6 @@
 
 <style>
   #profile img{
-    max-width: 80px;
+    max-width: 200px;
   }
 </style>

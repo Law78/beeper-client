@@ -44,6 +44,9 @@ export default {
   },
   methods: {
     likeBeep: function () {
+      if(!this.$auth.loggedIn()){
+        alertfiy.error('Devi loggarti se vuoi fare questa operazione');
+      }
       this.$http.patch(`/beeps/${this.beep.id}/like`)
         .then(function(res){
           if(this.beep.liked){
